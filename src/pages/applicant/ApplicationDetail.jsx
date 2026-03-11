@@ -30,7 +30,7 @@ function DocList({ documents, canUpload, onUpload }) {
         <ul className="space-y-2 mb-4">
           {documents.map(doc => {
             const filename = doc.fileUrl.split(/[\\/]/).pop()
-            const url = `http://localhost:8080/api/applications/files/${filename}`
+            const url = `${import.meta.env.VITE_FILES_BASE_URL}/${filename}`
             return (
               <li key={doc.id} className="text-sm text-gray-600 flex items-center gap-2">
                 <span className="text-blue-400">📄</span>

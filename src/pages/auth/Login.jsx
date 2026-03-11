@@ -78,6 +78,13 @@ export default function Login() {
             Register
           </Link>
         </p>
+
+        <p className="text-center text-sm text-gray-500 mt-2">
+          <Link to="/verify" className="text-gray-400 hover:text-blue-600 transition">
+            Verify a permit →
+          </Link>
+        </p>
+
       </div>
     </div>
   )
