@@ -4,14 +4,71 @@ import Navbar from '../../components/Navbar'
 import StatusBadge from '../../components/StatusBadge'
 import api from '../../api/axios'
 
+function DocList({ documents, canUpload, onUpload }) {
+  const [file, setFile] = useState(null)
+  const [uploading, setUploading] = useState(false)
+
+  const handleUpload = async (e) => {
+    e.preventDefault()
+    if (!file) return
+    setUploading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    try {
+      await onUpload(formData)
+      setFile(null)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <div>
+      {documents.length === 0 ? (
+        <p className="text-sm text-gray-400">No documents uploaded yet.</p>
+      ) : (
+        <ul className="space-y-2 mb-4">
+          {documents.map(doc => {
+            const filename = doc.fileUrl.split(/[\\/]/).pop()
+            const url = `http://localhost:8080/api/applications/files/${filename}`
+            return (
+              <li key={doc.id} className="text-sm text-gray-600 flex items-center gap-2">
+                <span className="text-blue-400">📄</span>
+                <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  {doc.fileName}
+                </a>
+                <span className="text-xs text-gray-400">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+      {canUpload && (
+        <form onSubmit={handleUpload} className="flex items-center gap-3 mt-2">
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-600 file:text-sm"
+          />
+          <button
+            type="submit"
+            disabled={uploading || !file}
+            className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+          >
+            {uploading ? 'Uploading...' : 'Upload'}
+          </button>
+        </form>
+      )}
+    </div>
+  )
+}
+
 export default function ApplicationDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [application, setApplication] = useState(null)
   const [documents, setDocuments] = useState([])
   const [timeline, setTimeline] = useState([])
-  const [file, setFile] = useState(null)
-  const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -23,22 +80,14 @@ export default function ApplicationDetail() {
 
   useEffect(() => { fetchAll() }, [id])
 
-  const handleUpload = async (e) => {
-    e.preventDefault()
-    if (!file) return
-    setUploading(true)
-    const formData = new FormData()
-    formData.append('file', file)
+  const handleUpload = async (formData) => {
     try {
       await api.post(`/applications/${id}/documents`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
-      setFile(null)
       fetchAll()
     } catch (err) {
       setError(err.response?.data?.message || 'Upload failed')
-    } finally {
-      setUploading(false)
     }
   }
 
@@ -68,20 +117,12 @@ export default function ApplicationDetail() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-3xl mx-auto px-6 py-8">
-        <button
-          onClick={() => navigate('/applicant')}
-          className="text-sm text-gray-400 hover:text-gray-600 mb-6 inline-block"
-        >
+        <button onClick={() => navigate('/applicant')} className="text-sm text-gray-400 hover:text-gray-600 mb-6 inline-block">
           ← Back
         </button>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
+        {error && <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-4">{error}</div>}
 
-        {/* Application Info */}
         <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
           <div className="flex items-start justify-between">
             <div>
@@ -106,42 +147,11 @@ export default function ApplicationDetail() {
           )}
         </div>
 
-        {/* Documents */}
         <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
           <h2 className="font-semibold text-gray-700 mb-4">Documents</h2>
-          {documents.length === 0 ? (
-            <p className="text-sm text-gray-400">No documents uploaded yet.</p>
-          ) : (
-            <ul className="space-y-2 mb-4">
-              {documents.map(doc => (
-                <li key={doc.id} className="text-sm text-gray-600 flex items-center gap-2">
-                  <span className="text-blue-400">📄</span> {doc.fileName}
-                  <span className="text-xs text-gray-400">
-                    {new Date(doc.uploadedAt).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {canUpload && (
-            <form onSubmit={handleUpload} className="flex items-center gap-3 mt-2">
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                className="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-600 file:text-sm"
-              />
-              <button
-                type="submit"
-                disabled={uploading || !file}
-                className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition"
-              >
-                {uploading ? 'Uploading...' : 'Upload'}
-              </button>
-            </form>
-          )}
+          <DocList documents={documents} canUpload={canUpload} onUpload={handleUpload} />
         </div>
 
-        {/* Timeline */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h2 className="font-semibold text-gray-700 mb-4">Activity Timeline</h2>
           {timeline.length === 0 ? (
@@ -154,9 +164,7 @@ export default function ApplicationDetail() {
                   <p className="text-sm font-medium text-gray-700">{event.action.replace(/_/g, ' ')}</p>
                   <p className="text-xs text-gray-400">{event.actorName} · {event.actorRole}</p>
                   {event.notes && <p className="text-xs text-gray-500 mt-0.5">{event.notes}</p>}
-                  <p className="text-xs text-gray-300 mt-0.5">
-                    {new Date(event.timestamp).toLocaleString()}
-                  </p>
+                  <p className="text-xs text-gray-300 mt-0.5">{new Date(event.timestamp).toLocaleString()}</p>
                 </li>
               ))}
             </ol>

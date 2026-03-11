@@ -7,6 +7,8 @@ import Register from './pages/auth/Register'
 import ApplicantDashboard from './pages/applicant/ApplicantDashboard'
 import NewApplication from './pages/applicant/NewApplication'
 import ApplicationDetail from './pages/applicant/ApplicationDetail'
+import OfficerDashboard from './pages/officer/OfficerDashboard'
+import ReviewApplication from './pages/officer/ReviewApplication'
 
 export default function App() {
   return (
@@ -31,6 +33,14 @@ export default function App() {
           } />
           <Route path="/applicant/applications/:id" element={
             <RoleRoute role="APPLICANT"><ApplicationDetail /></RoleRoute>
+          } />
+
+          {/* Officer routes */}
+          <Route path="/officer" element={
+            <RoleRoute role="OFFICER"><OfficerDashboard /></RoleRoute>
+          } />
+          <Route path="/officer/applications/:id" element={
+            <RoleRoute role="OFFICER"><ReviewApplication /></RoleRoute>
           } />
         </Routes>
       </BrowserRouter>
