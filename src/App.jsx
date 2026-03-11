@@ -11,6 +11,7 @@ import ReviewApplication from './pages/officer/ReviewApplication'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import Departments from './pages/admin/Departments'
 import PermitTypes from './pages/admin/PermitTypes'
+import VerifyPermit from './pages/public/VerifyPermit'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify" element={<VerifyPermit />} />
           <Route path="/unauthorized" element={
             <div className="min-h-screen flex items-center justify-center text-gray-600">
               Access Denied
