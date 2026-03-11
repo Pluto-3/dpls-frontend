@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './components/ProtectedRoute'
 import RoleRoute from './components/RoleRoute'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
@@ -9,6 +8,9 @@ import NewApplication from './pages/applicant/NewApplication'
 import ApplicationDetail from './pages/applicant/ApplicationDetail'
 import OfficerDashboard from './pages/officer/OfficerDashboard'
 import ReviewApplication from './pages/officer/ReviewApplication'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import Departments from './pages/admin/Departments'
+import PermitTypes from './pages/admin/PermitTypes'
 
 export default function App() {
   return (
@@ -41,6 +43,17 @@ export default function App() {
           } />
           <Route path="/officer/applications/:id" element={
             <RoleRoute role="OFFICER"><ReviewApplication /></RoleRoute>
+          } />
+
+          {/* Admin routes */}
+          <Route path="/admin" element={
+            <RoleRoute role="ADMIN"><AdminDashboard /></RoleRoute>
+          } />
+          <Route path="/admin/departments" element={
+            <RoleRoute role="ADMIN"><Departments /></RoleRoute>
+          } />
+          <Route path="/admin/permit-types" element={
+            <RoleRoute role="ADMIN"><PermitTypes /></RoleRoute>
           } />
         </Routes>
       </BrowserRouter>
