@@ -12,6 +12,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import Departments from './pages/admin/Departments'
 import PermitTypes from './pages/admin/PermitTypes'
 import VerifyPermit from './pages/public/VerifyPermit'
+import ActivityLog from './pages/admin/ActivityLog'
 
 export default function App() {
   return (
