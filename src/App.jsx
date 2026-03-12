@@ -22,6 +22,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify" element={<VerifyPermit />} />
+          <Route path="/admin/activity-log" element={<RoleRoute role="ADMIN"><ActivityLog /></RoleRoute>} />
           <Route path="/unauthorized" element={
             <div className="min-h-screen flex items-center justify-center text-gray-600">
               Access Denied

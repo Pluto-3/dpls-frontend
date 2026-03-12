@@ -36,7 +36,6 @@ export default function AdminDashboard() {
           <p className="text-gray-400 text-sm">Loading...</p>
         ) : stats ? (
           <>
-            {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="bg-white rounded-2xl shadow-sm p-6">
                 <p className="text-sm text-gray-400">Total Applications</p>
@@ -51,7 +50,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Applications by Status */}
             <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="font-semibold text-gray-700 mb-4">Applications by Status</h2>
               <div className="space-y-3">
@@ -70,7 +68,6 @@ export default function AdminDashboard() {
           <p className="text-gray-400 text-sm">No statistics available.</p>
         )}
 
-        {/* Management Links */}
         <div className="grid grid-cols-2 gap-4">
           <div
             onClick={() => navigate('/admin/departments')}
@@ -85,6 +82,13 @@ export default function AdminDashboard() {
           >
             <h2 className="font-semibold text-gray-700">Permit Types</h2>
             <p className="text-sm text-gray-400 mt-1">Manage available permit types</p>
+          </div>
+          <div
+            onClick={() => navigate('/admin/activity-log')}
+            className="bg-white rounded-2xl shadow-sm p-6 cursor-pointer hover:shadow-md transition col-span-2"
+          >
+            <h2 className="font-semibold text-gray-700">Activity Log</h2>
+            <p className="text-sm text-gray-400 mt-1">View all system activity across every application</p>
           </div>
         </div>
       </div>
