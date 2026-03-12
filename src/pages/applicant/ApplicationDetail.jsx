@@ -69,6 +69,7 @@ export default function ApplicationDetail() {
   const [application, setApplication] = useState(null)
   const [documents, setDocuments] = useState([])
   const [timeline, setTimeline] = useState([])
+  const [permit, setPermit] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -76,6 +77,7 @@ export default function ApplicationDetail() {
     api.get(`/applications/${id}`).then(res => setApplication(res.data.data))
     api.get(`/applications/${id}/documents`).then(res => setDocuments(res.data.data))
     api.get(`/applications/${id}/timeline`).then(res => setTimeline(res.data.data))
+    api.get(`/permits/application/${id}`).then(res => setPermit(res.data.data)).catch(() => {})
   }
 
   useEffect(() => { fetchAll() }, [id])
@@ -146,6 +148,33 @@ export default function ApplicationDetail() {
             </button>
           )}
         </div>
+
+        {permit && (
+          <div className="bg-white rounded-2xl shadow-sm p-6 mb-4 border border-purple-100">
+            <h2 className="font-semibold text-purple-700 mb-4">Permit Issued</h2>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Permit Number</span>
+                <span className="font-medium text-gray-700">{permit.permitNumber}</span>
+              </div>
+              <div className="flex justify-between items-start gap-4">
+                <span className="text-gray-400 shrink-0">Verification Code</span>
+                <span className="font-mono text-xs text-gray-700 break-all text-right">{permit.verificationCode}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Issued</span>
+                <span className="font-medium text-gray-700">{new Date(permit.issuedAt).toLocaleDateString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Expires</span>
+                <span className="font-medium text-gray-700">{new Date(permit.expiresAt).toLocaleDateString()}</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-4 pt-3 border-t border-gray-100">
+              Share the verification code with anyone who needs to verify this permit at the public verify page.
+            </p>
+          </div>
+        )}
 
         <div className="bg-white rounded-2xl shadow-sm p-6 mb-4">
           <h2 className="font-semibold text-gray-700 mb-4">Documents</h2>
